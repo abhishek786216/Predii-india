@@ -2,8 +2,9 @@ import chromadb
 from chromadb.utils.embedding_functions import (
     SentenceTransformerEmbeddingFunction,
 )
-# ck-BAyAD54hsyR7ZhbN4ZpwbPXqQs5Y7qEVEEZGctrvtSwT
-CHROMA_API_KEY = "ck-BAyAD54hsyR7ZhbN4ZpwbPXqQs5Y7qEVEEZGctrvtSwT"
+
+
+CHROMA_API_KEY = "ck-EAKZ8Wkkw6NMKhmB6wqaqBQt719qfUZDaRPzueLTcFj4"
 CHROMA_TENANT = "868d6a4f-8b36-43f7-9091-678afc1d0898"
 CHROMA_DATABASE = "predii-india"
 CHROMA_COLLECTION = "vehicle_specs"

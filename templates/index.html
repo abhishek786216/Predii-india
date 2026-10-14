@@ -36,12 +36,26 @@
           </select>
         </label>
         <label class="control">Top K <input id="top-k" type="number" min="1" max="20" value="5"></label>
-        <label class="check"><input id="index" type="checkbox"> Index PDF first</label>
         <input id="pdf" class="pdf-path" value="data/sample-service-manual.pdf" aria-label="PDF path">
       </div>
     </section>
 
     <section id="status" class="status" hidden></section>
+    <section id="progress" class="panel progress-panel" hidden aria-live="polite">
+      <div class="progress-head">
+        <div>
+          <span class="eyebrow"><span class="progress-pulse"></span> LIVE ANALYSIS</span>
+          <h2 id="progress-title">Preparing your answer</h2>
+        </div>
+        <span id="elapsed">00:00</span>
+      </div>
+      <div class="progress-track"><span></span></div>
+      <div class="progress-steps">
+        <span class="progress-step is-active">Indexing manual</span>
+        <span class="progress-step">Finding evidence</span>
+        <span class="progress-step">Structuring answer</span>
+      </div>
+    </section>
     <section id="result" class="panel result-panel" hidden>
       <div class="result-head">
         <div><span class="eyebrow">STRUCTURED OUTPUT</span><h2 id="result-title">Results</h2></div>
@@ -58,8 +72,14 @@
     const result = document.querySelector("#result");
     const output = document.querySelector("#output");
     const status = document.querySelector("#status");
+    const progress = document.querySelector("#progress");
+    const progressTitle = document.querySelector("#progress-title");
+    const elapsed = document.querySelector("#elapsed");
     const format = document.querySelector("#format");
     let latest = null;
+    let progressTimer = null;
+    let progressStartedAt = 0;
+    let progressStep = 0;
 
     function showStatus(message, kind = "") {
       status.hidden = false;
@@ -67,11 +87,43 @@
       status.textContent = message;
     }
 
+    function startProgress() {
+      progress.hidden = false;
+      progressStartedAt = Date.now();
+      progressStep = 0;
+      progressTitle.textContent = "Indexing the service manual";
+      document.querySelectorAll(".progress-step").forEach((step, index) => {
+        step.classList.toggle("is-active", index === 0);
+        step.classList.remove("is-complete");
+      });
+      progressTimer = setInterval(() => {
+        const seconds = Math.floor((Date.now() - progressStartedAt) / 1000);
+        elapsed.textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+        const nextStep = Math.min(2, Math.floor(seconds / 4));
+        if (nextStep !== progressStep) {
+          progressStep = nextStep;
+          const labels = ["Indexing the service manual", "Searching semantic evidence", "Structuring grounded results"];
+          progressTitle.textContent = labels[progressStep];
+          document.querySelectorAll(".progress-step").forEach((step, index) => {
+            step.classList.toggle("is-active", index === progressStep);
+            step.classList.toggle("is-complete", index < progressStep);
+          });
+        }
+      }, 250);
+    }
+
+    function stopProgress() {
+      clearInterval(progressTimer);
+      progressTimer = null;
+      progress.hidden = true;
+    }
+
     run.addEventListener("click", async () => {
       if (!query.value.trim()) return showStatus("Enter a question first.", "error");
       run.disabled = true;
       run.querySelector("span").textContent = "Analyzing…";
       result.hidden = true;
+      startProgress();
       showStatus("Embedding the question · searching evidence · structuring output…");
       try {
         const response = await fetch("/api/query", {
@@ -81,7 +133,6 @@
             query: query.value,
             format: format.value,
             top_k: Number(document.querySelector("#top-k").value),
-            index: document.querySelector("#index").checked,
             pdf: document.querySelector("#pdf").value
           })
         });
@@ -97,6 +148,7 @@
       } catch (error) {
         showStatus(error.message, "error");
       } finally {
+        stopProgress();
         run.disabled = false;
         run.querySelector("span").textContent = "Run analysis";
       }

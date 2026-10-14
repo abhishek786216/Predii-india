@@ -258,7 +258,6 @@ def query():
     question = str(payload.get("query", "")).strip()
     output_format = payload.get("format", "json")
     top_k = int(payload.get("top_k", 5))
-    should_index = bool(payload.get("index", False))
     pdf_path = Path(payload.get("pdf", str(DEFAULT_PDF_PATH)))
 
     if not question:
@@ -270,10 +269,8 @@ def query():
 
     try:
         store = VectorStore()
-        indexed = None
-        if should_index:
-            pages, chunks = index_pdf(store, pdf_path)
-            indexed = {"pages": pages, "chunks": chunks}
+        pages, chunks = index_pdf(store, pdf_path)
+        indexed = {"pages": pages, "chunks": chunks}
 
         results = Retriever(store).retrieve(question, top_k=top_k)
         records = generate_answer(question, results)
@@ -295,4 +292,5 @@ def query():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Avoid the debug watchdog interrupting long indexing and API requests.
+    app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
