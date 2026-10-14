@@ -259,7 +259,7 @@ contain the placeholder values.
 Index the sample manual and ask a question:
 
 ```powershell
-python -m src.main --query "What is the torque for brake caliper bolts?"
+python -m src.main --query "What vehicle model is covered in the manual?"
 ```
 
 The first run downloads the embedding model and uploads chunks to ChromaDB.
@@ -406,7 +406,7 @@ relevant sections, sends them to Groq, and writes structured results:
 ```powershell
 python -m src.main `
   --pdf "data\sample-service-manual.pdf" `
-  --query "What is the torque for brake caliper bolts?" `
+  --query "What vehicle model is covered in the manual?" `
   --format json `
   --output "outputs\specifications.json"
 ```
@@ -441,7 +441,7 @@ This avoids uploading the same PDF again:
 ```powershell
 python -m src.main `
   --no-index `
-  --query "What is the torque for brake caliper bolts?"
+  --query "What vehicle model is covered in the manual?"
 ```
 
 Use another manual:
@@ -457,7 +457,7 @@ JSON is the default:
 ```powershell
 python -m src.main `
   --no-index `
-  --query "What is the torque for brake caliper bolts?" `
+  --query "What vehicle model is covered in the manual?" `
   --format json `
   --output outputs\specifications.json
 ```
@@ -467,7 +467,7 @@ CSV is also supported:
 ```powershell
 python -m src.main `
   --no-index `
-  --query "What is the torque for brake caliper bolts?" `
+  --query "What vehicle model is covered in the manual?" `
   --format csv `
   --output outputs\specifications.csv
 ```
