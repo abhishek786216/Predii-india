@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Predii India | Architecture</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="architecture-page">
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+  <main class="architecture-shell">
+    <header class="architecture-hero">
+      <a class="back-link" href="{{ url_for('home') }}">← Back to console</a>
+      <span class="eyebrow"><span class="pulse"></span> SYSTEM BLUEPRINT</span>
+      <h1>How Predii turns<br><em>manuals into answers.</em></h1>
+      <p>Hover or focus any stage to see exactly what it does. Every card below is read from <code>architecture.drawio</code>.</p>
+    </header>
+
+    <div class="architecture-legend">
+      <span><i class="legend-dot input-dot"></i>Ingestion</span>
+      <span><i class="legend-dot knowledge-dot"></i>Knowledge layer</span>
+      <span><i class="legend-dot query-dot"></i>Retrieval</span>
+      <span><i class="legend-dot output-dot"></i>Output</span>
+    </div>
+
+    {% for group in groups %}
+    <section class="flow-section">
+      <div class="flow-heading">
+        <span class="flow-number">{{ group.number }}</span>
+        <div>
+          <span class="eyebrow">{{ group.label }}</span>
+          <p>{{ group.description }}</p>
+        </div>
+      </div>
+      <div class="flow-grid group-{{ loop.index }}">
+        {% for box in group.boxes %}
+        <article class="flow-card" tabindex="0" style="--card-color: {{ box.fill }}">
+          <div class="card-topline">
+            <span class="card-index">{{ "%02d"|format(loop.index) }}</span>
+            <span class="card-status">ACTIVE</span>
+          </div>
+          <h2>{{ box.title }}</h2>
+          <p>{{ box.details|join(" · ") }}</p>
+          <div class="card-more">View responsibility <span>↗</span></div>
+          <div class="card-tooltip">{{ box.details|join(" · ") }}</div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+
+    <footer><span class="footer-brand">PREDII INDIA</span><i>×</i><span>Architecture source: architecture.drawio</span></footer>
+  </main>
+</body>
+</html>

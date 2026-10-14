@@ -3,16 +3,16 @@
 A Python RAG pipeline that extracts vehicle specifications from automotive
 service-manual PDFs and returns grounded JSON or CSV records.
 
-## Evaluation criteria mapping
+## Product flow
 
-## Architecture diagram
+### 1. Architecture
 
-The end-to-end architecture is available as a draw.io XML file:
+<p align="center">
+  <img src="./architecture/image.png" alt="Predii India vehicle specification extraction architecture" width="100%">
+</p>
 
-[architecture.drawio](./architecture.drawio)
-
-Open it at [app.diagrams.net](https://app.diagrams.net/) and choose
-**File -> Open From -> Device**. The diagram shows:
+The pipeline is designed as a grounded Retrieval-Augmented Generation (RAG)
+workflow:
 
 - PDF text extraction with PyMuPDF.
 - The OCR decision condition: OCR runs when extracted page text is shorter
@@ -24,9 +24,19 @@ Open it at [app.diagrams.net](https://app.diagrams.net/) and choose
 - Query embedding, `top_k` semantic retrieval, Groq extraction, Pydantic
   validation, and JSON/CSV output.
 
-To create a paper-ready image, open the XML in draw.io and choose
-**File -> Export as -> PNG** or **JPG**. Use 200-300% scale and enable
-**Crop** only if you want to remove page whitespace.
+### 2. User interface
+
+<p align="center">
+  <img src="./architecture/image1.png" alt="Predii India vehicle intelligence user interface" width="100%">
+</p>
+
+The user journey is intentionally simple:
+
+1. Ask a question about the service manual.
+2. Choose JSON or CSV output and configure retrieval settings.
+3. Run the analysis.
+4. Review grounded specifications with source-page evidence.
+5. Download the structured result.
 
 ### Concept understanding
 
