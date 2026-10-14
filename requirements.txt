@@ -1,0 +1,10 @@
+pymupdf
+chromadb
+sentence-transformers
+groq
+opentelemetry-api>=1.27.0
+opentelemetry-sdk>=1.27.0
+pydantic
+pandas
+pytest
+flask
