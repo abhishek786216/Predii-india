@@ -1,31 +1,21 @@
-import os
-
 import chromadb
 from chromadb.utils.embedding_functions import (
     SentenceTransformerEmbeddingFunction,
 )
-CHROMA_API_KEY = os.getenv("CHROMA_API_KEY")
-CHROMA_TENANT = os.getenv("CHROMA_TENANT")
-CHROMA_DATABASE = os.getenv("CHROMA_DATABASE")
+# ck-BAyAD54hsyR7ZhbN4ZpwbPXqQs5Y7qEVEEZGctrvtSwT
+CHROMA_API_KEY = "ck-BAyAD54hsyR7ZhbN4ZpwbPXqQs5Y7qEVEEZGctrvtSwT"
+CHROMA_TENANT = "868d6a4f-8b36-43f7-9091-678afc1d0898"
+CHROMA_DATABASE = "predii-india"
 CHROMA_COLLECTION = "vehicle_specs"
 
 
 class VectorStore:
 
     def __init__(self, collection_name=CHROMA_COLLECTION):
-        missing_variables = [
-            name
-            for name, value in (
-                ("CHROMA_API_KEY", CHROMA_API_KEY),
-                ("CHROMA_TENANT", CHROMA_TENANT),
-                ("CHROMA_DATABASE", CHROMA_DATABASE),
-            )
-            if not value
-        ]
-        if missing_variables:
+        if CHROMA_API_KEY == "PASTE_YOUR_NEW_CHROMA_API_KEY_HERE":
             raise RuntimeError(
-                "Set the following environment variables before creating a "
-                f"VectorStore: {', '.join(missing_variables)}."
+                "Replace CHROMA_API_KEY with your ChromaDB Cloud API key "
+                "before creating a VectorStore."
             )
 
         self.client = chromadb.CloudClient(

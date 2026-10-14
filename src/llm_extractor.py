@@ -1,12 +1,11 @@
 import json
-import os
 
 from groq import Groq
 
 from src.schemas import ExtractionResult
 
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = "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"
 GROQ_MODEL = "openai/gpt-oss-120b"
 
 
@@ -14,9 +13,9 @@ def generate_answer(query, retrieved_chunks):
     if not retrieved_chunks:
         return []
 
-    if not GROQ_API_KEY:
+    if GROQ_API_KEY == "PASTE_YOUR_NEW_GROQ_API_KEY_HERE":
         raise RuntimeError(
-            "Set the GROQ_API_KEY environment variable before querying."
+            "Replace GROQ_API_KEY with your Groq API key before querying."
         )
 
     context = "\n\n".join(
