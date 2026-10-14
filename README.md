@@ -8,7 +8,7 @@ service-manual PDFs and returns grounded JSON or CSV records.
 ### 1. Architecture
 
 <p align="center">
-  <img src="./architecture/architecture(1).jpg" alt="Predii India vehicle specification extraction architecture" width="100%">
+  <img src="./architecture/architecture (1).jpg" alt="Predii India vehicle specification extraction architecture" width="100%">
 </p>
 
 The pipeline is designed as a grounded Retrieval-Augmented Generation (RAG)
