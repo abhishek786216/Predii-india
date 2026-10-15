@@ -34,7 +34,11 @@ def get_indexed_store(pdf_path):
     with _index_lock:
         if _indexed_pdf != signature:
             store = VectorStore()
-            pages, chunks = index_pdf(store, resolved_path)
+            existing_chunks = store.collection.count()
+            if existing_chunks:
+                pages, chunks = 0, existing_chunks
+            else:
+                pages, chunks = index_pdf(store, resolved_path)
             _indexed_pdf = signature
             _indexed_store = store
             _indexed_stats = {"pages": pages, "chunks": chunks}

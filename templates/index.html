@@ -41,7 +41,8 @@
       <p class="query-notice">
         <strong>First query notice:</strong> The first question after the server
         starts may take approximately 2–3 minutes while the 852-page manual is
-        indexed. Later questions should return much faster.
+        indexed. If the collection is already populated, the first question
+        should also return normally; later questions reuse the same index.
       </p>
     </section>
 
@@ -141,7 +142,12 @@
             pdf: document.querySelector("#pdf").value
           })
         });
-        latest = await response.json();
+        const responseText = await response.text();
+        try {
+          latest = responseText ? JSON.parse(responseText) : {};
+        } catch {
+          throw new Error(`Server returned an invalid response (${response.status}).`);
+        }
         if (!response.ok) throw new Error(latest.error || "Request failed.");
         output.textContent = format.value === "json"
           ? JSON.stringify(latest.records, null, 2)
