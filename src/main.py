@@ -78,7 +78,7 @@ def parse_args():
     parser.add_argument(
         "--top-k",
         type=int,
-        default=5,
+        default=10,
         help="Number of matching chunks to return.",
     )
     parser.add_argument(

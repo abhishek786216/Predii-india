@@ -2,6 +2,7 @@ import csv
 import html
 import io
 import re
+import threading
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -15,6 +16,30 @@ from src.vector_store import VectorStore
 
 app = Flask(__name__)
 ARCHITECTURE_PATH = Path(__file__).with_name("architecture.drawio")
+_index_lock = threading.Lock()
+_indexed_pdf = None
+_indexed_store = None
+_indexed_stats = None
+
+
+def get_indexed_store(pdf_path):
+    """Reuse the expensive manual index for subsequent questions."""
+    global _indexed_pdf, _indexed_store, _indexed_stats
+
+    resolved_path = pdf_path.resolve()
+    if not resolved_path.is_file():
+        raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+    signature = (str(resolved_path), resolved_path.stat().st_mtime_ns)
+
+    with _index_lock:
+        if _indexed_pdf != signature:
+            store = VectorStore()
+            pages, chunks = index_pdf(store, resolved_path)
+            _indexed_pdf = signature
+            _indexed_store = store
+            _indexed_stats = {"pages": pages, "chunks": chunks}
+
+        return _indexed_store, _indexed_stats
 
 
 def read_architecture_boxes():
@@ -257,7 +282,7 @@ def query():
     payload = request.get_json(silent=True) or {}
     question = str(payload.get("query", "")).strip()
     output_format = payload.get("format", "json")
-    top_k = int(payload.get("top_k", 5))
+    top_k = int(payload.get("top_k", 10))
     pdf_path = Path(payload.get("pdf", str(DEFAULT_PDF_PATH)))
 
     if not question:
@@ -268,9 +293,7 @@ def query():
         return jsonify(error="top_k must be between 1 and 20."), 400
 
     try:
-        store = VectorStore()
-        pages, chunks = index_pdf(store, pdf_path)
-        indexed = {"pages": pages, "chunks": chunks}
+        store, indexed = get_indexed_store(pdf_path)
 
         results = Retriever(store).retrieve(question, top_k=top_k)
         records = generate_answer(question, results)

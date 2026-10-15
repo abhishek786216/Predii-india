@@ -228,8 +228,10 @@ python web_app.py
 
 Open `http://127.0.0.1:5000` in a browser. Enter a question, choose JSON or
 CSV, set `top_k`, and click **Run analysis**. The result is rendered in the
-page and can be downloaded. Keep **Index PDF first** unchecked for normal
-queries after the manual has already been indexed.
+page and can be downloaded. The web app keeps the
+initialized vector store and PDF index in memory, so only the first query for a
+PDF performs the expensive indexing step. If the PDF changes, it is indexed
+again automatically.
 
 Put newly generated credentials in the constants at the top of
 `src/vector_store.py` and `src/llm_extractor.py`. Never commit real keys.

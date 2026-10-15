@@ -35,9 +35,14 @@
             <option value="csv">CSV</option>
           </select>
         </label>
-        <label class="control">Top K <input id="top-k" type="number" min="1" max="20" value="5"></label>
+        <label class="control">Top K <input id="top-k" type="number" min="1" max="20" value="10"></label>
         <input id="pdf" class="pdf-path" value="data/sample-service-manual.pdf" aria-label="PDF path">
       </div>
+      <p class="query-notice">
+        <strong>First query notice:</strong> The first question after the server
+        starts may take approximately 2–3 minutes while the 852-page manual is
+        indexed. Later questions should return much faster.
+      </p>
     </section>
 
     <section id="status" class="status" hidden></section>
